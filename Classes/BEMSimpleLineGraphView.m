@@ -392,7 +392,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
         }
 
         NSLog(@"[BEMSimpleLineGraph] Data source contains no data. A no data label will be displayed and drawing will stop. Add data to the data source and then reload the graph.");
-        self.noDataLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.viewForFirstBaselineLayout.frame.size.width, self.viewForFirstBaselineLayout.frame.size.height)];
+        self.noDataLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.baselineView.frame.size.width, self.baselineView.frame.size.height)];
         self.noDataLabel.backgroundColor = [UIColor clearColor];
         self.noDataLabel.textAlignment = NSTextAlignmentCenter;
         NSString *noDataText = nil;
@@ -403,7 +403,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
         self.noDataLabel.font = self.noDataLabelFont ?: [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
         self.noDataLabel.textColor = self.noDataLabelColor ?: (self.colorXaxisLabel ?: [UIColor blackColor]);
 
-        [self.viewForFirstBaselineLayout addSubview:self.noDataLabel];
+        [baselineView addSubview:self.noDataLabel];
 
         // Let the delegate know that the graph finished layout updates
        if ([self.delegate respondsToSelector:@selector(lineGraphDidFinishLoading:)]) {
@@ -418,7 +418,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
         circleDot.color = self.colorPoint;
         circleDot.alpha = 1.0f;
 
-        [self.viewForFirstBaselineLayout addSubview:circleDot];
+        [baselineView addSubview:circleDot];
         self.oneDot = circleDot;
 
         // Let the delegate know that the graph finished layout updates
@@ -441,7 +441,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
         [self addSubview:self.touchInputLine];
 
         if (!self.panView) {
-            self.panView = [[UIView alloc] initWithFrame:CGRectMake(10, 10, self.viewForFirstBaselineLayout.frame.size.width, self.viewForFirstBaselineLayout.frame.size.height)];
+            self.panView = [[UIView alloc] initWithFrame:CGRectMake(10, 10, self.baselineView.frame.size.width, self.baselineView.frame.size.height)];
             self.panView.backgroundColor = [UIColor clearColor];
 
             self.panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleGestureAction:)];
@@ -873,7 +873,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
 
     // Add support multi-line, but this might overlap with the graph line if text have too many lines
     labelXAxis.numberOfLines = 0;
-    CGRect lRect = [labelXAxis.text boundingRectWithSize:self.viewForFirstBaselineLayout.frame.size options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:labelXAxis.font} context:nil];
+    CGRect lRect = [labelXAxis.text boundingRectWithSize:self.baselineView.frame.size options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:labelXAxis.font} context:nil];
 
     // Determine the horizontal translation to perform on the far left and far right labels
     // This property is negated when calculating the position of reference frames
@@ -1284,7 +1284,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
 }
 
 - (void)handleGestureAction:(UIGestureRecognizer *)recognizer {
-    CGPoint translation = [recognizer locationInView:self.viewForFirstBaselineLayout];
+    CGPoint translation = [recognizer locationInView:self.baselineView];
 
     if (!((translation.x + self.frame.origin.x) <= self.frame.origin.x) && !((translation.x + self.frame.origin.x) >= self.frame.origin.x + self.frame.size.width)) { // To make sure the vertical line doesn't go beyond the frame of the graph.
         self.touchInputLine.frame = CGRectMake(translation.x - self.widthTouchInputLine/2, 0, self.widthTouchInputLine, self.frame.size.height);
@@ -1509,6 +1509,14 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
 - (void)printDeprecationTransitionWarningForOldMethod:(NSString *)oldMethod replacementMethod:(NSString *)replacementMethod newObject:(NSString *)newObjectName sharedInstance:(BOOL)isSharedInstance {
     if (isSharedInstance == YES) NSLog(@"[BEMSimpleLineGraph] %@ is deprecated. Please use %@ on the shared instance of %@.", oldMethod, replacementMethod, newObjectName);
     else NSLog(@"[BEMSimpleLineGraph] %@ is deprecated. Please use %@ on the %@ class.", oldMethod, replacementMethod, newObjectName);
+}
+
+- (UIView *)baselineView {
+    if ([UIView instancesRespondToSelector:@selector(viewForFirstBaselineLayout)]) {
+        return self.viewForFirstBaselineLayout;
+    } else {
+        return self.viewForBaselineLayout;
+    }
 }
 
 @end
