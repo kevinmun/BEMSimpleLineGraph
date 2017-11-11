@@ -403,7 +403,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
         self.noDataLabel.font = self.noDataLabelFont ?: [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
         self.noDataLabel.textColor = self.noDataLabelColor ?: (self.colorXaxisLabel ?: [UIColor blackColor]);
 
-        [baselineView addSubview:self.noDataLabel];
+        [self.baselineView addSubview:self.noDataLabel];
 
         // Let the delegate know that the graph finished layout updates
        if ([self.delegate respondsToSelector:@selector(lineGraphDidFinishLoading:)]) {
@@ -418,7 +418,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
         circleDot.color = self.colorPoint;
         circleDot.alpha = 1.0f;
 
-        [baselineView addSubview:circleDot];
+        [self.baselineView addSubview:circleDot];
         self.oneDot = circleDot;
 
         // Let the delegate know that the graph finished layout updates
